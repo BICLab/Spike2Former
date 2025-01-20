@@ -1,4 +1,4 @@
-## **Spike2Former: Efficient Spiking Transformer for High-performance Image Segmentation (AAAI 2025 Oral)**
+# **Spike2Former: Efficient Spiking Transformer for High-performance Image Segmentation (AAAI 2025 Oral)**
 
 Zhenxin Lei∗ , Man Yao , Jiakui Hu∗ , Xinhao Luo, Yanye Lu, Bo Xu , Guoqi Li
 
