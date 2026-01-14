@@ -39,7 +39,7 @@ Spiking Neural Networks (SNNs) have a low-power advantage but perform poorly in 
 
   
 
-- Run the following command to train Spike2Former, the pretrained weight in Spike2Former can be download from [Meta-Spikeformer](https://github.com/BICLab/Spike-Driven-Transformer-V2). For more training settings, please refer to ./config/Spike2Former for more details.
+- Run the following command to train Spike2Former, the pretrained weight in Spike2Former can be download from [Meta-Spikeformer](https://github.com/BICLab/Spike-Driven-Transformer-V2), or you can direct download from the following link [Spike2Former Backbone](https://pan.baidu.com/s/1utTHItl5PdcCaKfyZY_XLA?pwd=gtqy). For more training settings, please refer to ./config/Spike2Former for more details.
 
   ```
   cd Spike2Former
