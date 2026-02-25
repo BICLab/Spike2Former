@@ -44,7 +44,7 @@ Spiking Neural Networks (SNNs) have a low-power advantage but perform poorly in 
   ```
   cd Spike2Former
   cd tools
-  CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 ./dist_train.sh ../configs/Spikeformer/SDTv2_maskformer_DCNpixelDecoder_ade20k.py 8
+  CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 ./dist_train.sh ../configs/Spike2former/SDTv2_maskformer_DCNpixelDecoder_ade20k.py 8
   ```
 
 - Run the following command to test Spike2Former：
