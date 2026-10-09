@@ -46,14 +46,14 @@ The released segmentation configs use `ADE20K_ROOT`, `CITYSCAPES_ROOT`, and `VOC
 
 These configs preserve the corresponding run's model and evaluation settings. Local dataset paths and automatic resume settings have been adapted for release. The checkpoints are hosted in the [Spike2Former Hugging Face repository](https://huggingface.co/ZhenXXXXXin/Spike2Former) and are not stored in Git.
 
-| Dataset | Run | Config | Checkpoint |
+| Dataset | Run | Checkpoint config | Checkpoint |
 | --- | --- | --- | --- |
-| ADE20K | SDTv2 (4×4) | [`ADE20K_SDTv2_iter102500.py`](Segmentation/configs/Spike2Former/released/ADE20K_SDTv2_iter102500.py) | [ADE20K-SDTv2-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/ADE20K-SDTv2-ckpt-best.pth?download=true) |
+| ADE20K | SDTv2 (paper: 1×4) | [`ADE20K_SDTv2_iter102500.py`](Segmentation/configs/Spike2Former/released/ADE20K_SDTv2_iter102500.py) | [ADE20K-SDTv2-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/ADE20K-SDTv2-ckpt-best.pth?download=true) |
 | Cityscapes | SDTv2 | [`Cityscapes_SDTv2_iter75000.py`](Segmentation/configs/Spike2Former/released/Cityscapes_SDTv2_iter75000.py) | [Cityscapes-SDTv2-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/Cityscapes-SDTv2-ckpt-best.pth?download=true) |
 | PASCAL VOC 2012 | 1×4 | [`VOC2012_1x4_iter97500.py`](Segmentation/configs/Spike2Former/released/VOC2012_1x4_iter97500.py) | [VOC2012-1x4-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/VOC2012-1x4-ckpt-best.pth?download=true) |
 | PASCAL VOC 2012 | 4×4 | [`VOC2012_4x4_iter72500.py`](Segmentation/configs/Spike2Former/released/VOC2012_4x4_iter72500.py) | [VOC2012-4x4-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/VOC2012-4x4-ckpt-best.pth?download=true) |
 
-The paper reports the ADE20K result with T×D = 1×4. The ADE20K SDTv2 checkpoint listed above was trained with T×D = 4×4 and a 640×640 crop; it comes from a separate run.
+The paper's [ADE20K SDTv2 config](Segmentation/configs/Spike2Former/SDTv2_maskformer_DCNpixelDecoder_ade20k.py) uses T×D = 1×4 and a 512×512 crop. The linked checkpoint embeds a separate run's config with T=4 and a 640×640 crop; its settings do not exactly match the paper config. The config linked in the table preserves the checkpoint's settings.
 
 The implementation also supports [Meta-SpikeFormer](https://github.com/BICLab/Spike-Driven-Transformer-V2) and [E-SpikeFormer](https://github.com/BICLab/Spike-Driven-Transformer-V3) backbones. Other segmentation dataset configurations include [Pascal Context](https://github.com/open-mmlab/mmsegmentation/blob/main/docs/en/user_guides/2_dataset_prepare.md#pascal-context), [COCO-Stuff 10k](https://github.com/open-mmlab/mmsegmentation/blob/main/docs/en/user_guides/2_dataset_prepare.md#coco-stuff-10k), and [COCO-Stuff 164k](https://github.com/open-mmlab/mmsegmentation/blob/main/docs/en/user_guides/2_dataset_prepare.md#coco-stuff-164k).
 
