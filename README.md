@@ -65,11 +65,12 @@ The following best semantic segmentation checkpoints are available from the [Spi
 
 | Dataset | Run | Best checkpoint |
 | --- | --- | --- |
-| ADE20K | Spike2Former-L, V2 | [ADE20K-V2-L-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/ADE20K-V2-L-ckpt-best.pth?download=true) |
-| ADE20K | SDTv2 | [ADE20K-SDTv2-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/ADE20K-SDTv2-ckpt-best.pth?download=true) |
+| ADE20K | SDTv2 (4×4) | [ADE20K-SDTv2-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/ADE20K-SDTv2-ckpt-best.pth?download=true) |
 | Cityscapes | SDTv2 | [Cityscapes-SDTv2-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/Cityscapes-SDTv2-ckpt-best.pth?download=true) |
 | PASCAL VOC 2012 | 1×4 | [VOC2012-1x4-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/VOC2012-1x4-ckpt-best.pth?download=true) |
 | PASCAL VOC 2012 | 4×4 | [VOC2012-4x4-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/VOC2012-4x4-ckpt-best.pth?download=true) |
+
+The paper reports the ADE20K result with T×D = 1×4. The ADE20K SDTv2 checkpoint listed above was trained with T×D = 4×4 and a 640×640 crop; it comes from a separate run.
 
 <details open>
 <summary>Supported backbones:</summary>
