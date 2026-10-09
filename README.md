@@ -15,73 +15,52 @@ Spiking Neural Networks (SNNs) have a low-power advantage but perform poorly in 
 
 2025.1.20: Upload code.
 
-### Train and Test Spike2Former
+### Installation and usage
 
-- Get Start.
+The semantic segmentation code is in [`Segmentation/`](Segmentation/) (MMSegmentation 1.1.1). The panoptic segmentation code is in [`detection/`](detection/) (MMDetection 3.1.0). Each directory contains its own `mmdet` package, so use separate Python environments for the two tasks. Install PyTorch, MMCV 2.0.1, MMEngine 0.8.4, and the matching CUDA build before installing the project. Run each example from the repository root in its own environment.
 
-  Before training and testing, please build the mmsegmentation (v1.1.1) and mmdetection (v3.1.0) environment with the following command, you should also refer to the official get_start guidline of mmsegmentation to build Openmim, mmcv, and mmengine according to you CUDA version, and form the dataset:
+```bash
+# Semantic segmentation environment
+cd Segmentation
+pip install -v -e .
+export ADE20K_ROOT=/path/to/ADEChallengeData2016
+export SPIKE2FORMER_BACKBONE_CKPT=/path/to/pretrained_backbone.pth
+CUDA_VISIBLE_DEVICES=0 ./tools/test.sh \
+  configs/Spike2Former/released/ADE20K_V2_L_iter155000.py \
+  /path/to/ADE20K_V2_Spike2former_L_best_mIoU_iter_155000.pth
+```
 
-  ```
-  # Before install Spike2Former, please ensure you have installed openmim, mmcv=2.0.1(Suggest), mmengine=0.8.4(Suggest)
-  
-  cd Spike2Former
-  
-  # For semantic segmentation
-  cd segmentation
-  pip install -v -e .
-  
-  # For panoptic segmentation
-  cd detection
-  pip install -v -e .
-  # '-v' means verbose, or more output
-  # '-e' means installing a project in editable mode,
-  ```
+```bash
+# Panoptic segmentation environment
+cd detection
+pip install -v -e .
+export COCO_ROOT=/path/to/coco/
+export SPIKE2FORMER_BACKBONE_CKPT=/path/to/pretrained_backbone.pth
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 ./tools/dist_train.sh \
+  configs/spike2former/spike2former_sdtv2_ms-8xb2-50e_coco.py 8
+```
 
-  
+The released segmentation configs use `ADE20K_ROOT`, `CITYSCAPES_ROOT`, and `VOC2012_ROOT` for dataset locations. Detection configs use `COCO_ROOT` or `ADE20K_ROOT`. `SPIKE2FORMER_BACKBONE_CKPT` is optional for loading a pretrained backbone; without it, the model initializes from scratch. The original backbone weights are linked at [Spike2Former Backbone](https://pan.baidu.com/s/1utTHItl5PdcCaKfyZY_XLA?pwd=gtqy). Adjust batch size and workers for your hardware.
 
-- Run the following command to train Spike2Former, the pretrained weight in Spike2Former can be download from [Meta-Spikeformer](https://github.com/BICLab/Spike-Driven-Transformer-V2), or you can direct download from the following link [Spike2Former Backbone](https://pan.baidu.com/s/1utTHItl5PdcCaKfyZY_XLA?pwd=gtqy). For more training settings, please refer to ./config/Spike2Former for more details.
+### Released semantic segmentation checkpoints
 
-  ```
-  cd Spike2Former
-  cd tools
-  CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 ./dist_train.sh ../configs/Spikeformer/SDTv2_maskformer_DCNpixelDecoder_ade20k.py 8
-  ```
+These configs preserve the corresponding run's model and evaluation settings. Local dataset paths and automatic resume settings have been adapted for release. The checkpoints are hosted separately and are not stored in Git.
+SHA-256 hashes for the five files are recorded in [`checkpoint_checksums.sha256`](checkpoint_checksums.sha256).
 
-- Run the following command to test Spike2Former：
+| Dataset | Run | Config | Checkpoint |
+| --- | --- | --- | --- |
+| ADE20K | Spike2Former-L, V2 | [`ADE20K_V2_L_iter155000.py`](Segmentation/configs/Spike2Former/released/ADE20K_V2_L_iter155000.py) | Upload in progress |
+| ADE20K | SDTv2 | [`ADE20K_SDTv2_iter102500.py`](Segmentation/configs/Spike2Former/released/ADE20K_SDTv2_iter102500.py) | Upload in progress |
+| Cityscapes | SDTv2 | [`Cityscapes_SDTv2_iter75000.py`](Segmentation/configs/Spike2Former/released/Cityscapes_SDTv2_iter75000.py) | Upload in progress |
+| PASCAL VOC 2012 | 1×4 | [`VOC2012_1x4_iter97500.py`](Segmentation/configs/Spike2Former/released/VOC2012_1x4_iter97500.py) | Upload in progress |
+| PASCAL VOC 2012 | 4×4 | [`VOC2012_4x4_iter72500.py`](Segmentation/configs/Spike2Former/released/VOC2012_4x4_iter72500.py) | Upload in progress |
 
-  ```
-  cd Spike2Former
-  cd tools
-  ./test.sh 
-  ```
+The implementation also supports [Meta-SpikeFormer](https://github.com/BICLab/Spike-Driven-Transformer-V2) and [E-SpikeFormer](https://github.com/BICLab/Spike-Driven-Transformer-V3) backbones. Other segmentation dataset configurations include [Pascal Context](https://github.com/open-mmlab/mmsegmentation/blob/main/docs/en/user_guides/2_dataset_prepare.md#pascal-context), [COCO-Stuff 10k](https://github.com/open-mmlab/mmsegmentation/blob/main/docs/en/user_guides/2_dataset_prepare.md#coco-stuff-10k), and [COCO-Stuff 164k](https://github.com/open-mmlab/mmsegmentation/blob/main/docs/en/user_guides/2_dataset_prepare.md#coco-stuff-164k).
 
-- Some useful tools:
+### Notes
 
-  You can use `cal_firing_num.py` to anlysis the firing rate of spike neurons, run the `./dist_test.sh` for evaluation.
-
-## Benchmark and model zoo
-
-Results and models will be available in the [model zoo](docs/en/model_zoo.md).
-
-<details open>
-<summary>Supported backbones:</summary>
-
-- [ ] [Meta-SpikeFormer(ICLR'2024)](https://github.com/BICLab/Spike-Driven-Transformer-V2)
-- [ ] [E-SpikeFormer(T-PAMI 2025)](https://github.com/BICLab/Spike-Driven-Transformer-V3)
-
-</details>
-
-<details open>
-<summary>Supported datasets:</summary>
-
-- [x] [Cityscapes](https://github.com/open-mmlab/mmsegmentation/blob/main/docs/en/user_guides/2_dataset_prepare.md#cityscapes)
-- [x] [PASCAL VOC](https://github.com/open-mmlab/mmsegmentation/blob/main/docs/en/user_guides/2_dataset_prepare.md#pascal-voc)
-- [x] [ADE20K](https://github.com/open-mmlab/mmsegmentation/blob/main/docs/en/user_guides/2_dataset_prepare.md#ade20k)
-- [x] [Pascal Context](https://github.com/open-mmlab/mmsegmentation/blob/main/docs/en/user_guides/2_dataset_prepare.md#pascal-context)
-- [x] [COCO-Stuff 10k](https://github.com/open-mmlab/mmsegmentation/blob/main/docs/en/user_guides/2_dataset_prepare.md#coco-stuff-10k)
-- [x] [COCO-Stuff 164k](https://github.com/open-mmlab/mmsegmentation/blob/main/docs/en/user_guides/2_dataset_prepare.md#coco-stuff-164k)
-
-</details>
+- Training and test entry points accept the config and checkpoint as arguments: `Segmentation/tools/dist_train.sh`, `Segmentation/tools/test.sh`, `detection/tools/dist_train.sh`, and `detection/tools/dist_test.sh`.
+- The panoptic code and the missing pixel decoder module address [Issue #5](https://github.com/BICLab/Spike2Former/issues/5) and [Issue #6](https://github.com/BICLab/Spike2Former/issues/6).
 
 ## Citation
 
@@ -95,4 +74,3 @@ If you find this project useful in your research, please consider cite:
   year={2024}
 }
 ```
-

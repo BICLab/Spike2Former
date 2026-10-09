@@ -1,0 +1,263 @@
+import os
+
+_base_ = [
+    '../_base_/datasets/coco_panoptic.py', '../_base_/default_runtime.py'
+]
+image_size = (1024, 1024)
+batch_augments = [
+    dict(
+        type='BatchFixedSizePad',
+        size=image_size,
+        img_pad_value=0,
+        pad_mask=True,
+        mask_pad_value=0,
+        pad_seg=True,
+        seg_pad_value=255)
+]
+data_preprocessor = dict(
+    type='DetDataPreprocessor',
+    mean=[123.675, 116.28, 103.53],
+    std=[58.395, 57.12, 57.375],
+    bgr_to_rgb=True,
+    pad_size_divisor=32,
+    pad_mask=True,
+    mask_pad_value=0,
+    pad_seg=True,
+    seg_pad_value=255,
+    batch_augments=batch_augments)
+
+num_things_classes = 80
+num_stuff_classes = 53
+num_classes = num_things_classes + num_stuff_classes
+checkpoint_file = os.getenv('SPIKE2FORMER_BACKBONE_CKPT')
+model = dict(
+    type='Mask2Former',
+    data_preprocessor=data_preprocessor,
+    backbone=dict(
+        init_cfg=(dict(type='Pretrained', checkpoint=checkpoint_file)
+                  if checkpoint_file else None),
+        type='Spiking_vit_MetaFormerv2',
+        img_size_h=512,
+        img_size_w=512,
+        patch_size=16,
+        embed_dim=[64, 128, 256, 360],
+        num_heads=8,
+        mlp_ratios=4,
+        in_channels=3,
+        num_classes=150,
+        qkv_bias=False,
+        depths=8,
+        sr_ratios=1,
+        T=4,
+        norm_cfg=dict(type='BN', requires_grad=True),
+        decode_mode='QTrick',
+    ),
+    panoptic_head=dict(
+        type='MaskFormerHead',
+        in_channels=[32, 64, 128, 360],  # pass to pixel_decoder inside
+        strides=[4, 8, 16, 32],
+        feat_channels=256,
+        out_channels=256,
+        num_things_classes=num_things_classes,
+        num_stuff_classes=num_stuff_classes,
+        num_queries=100,
+        pixel_decoder=dict(
+            type='mmdet.DCNTransformerEncoderPixelDecoder',
+            T=4,
+            encoder=dict(  # DetrTransformerEncoder
+                num_layers=6,
+                layer_cfg=dict(  # DetrTransformerEncoderLayer
+                    self_attn_cfg=dict(  # MultiheadAttention
+                        embed_dims=256,
+                        num_heads=8,
+                        batch_first=True,
+                        dw_kernel_size=5,
+                        group=32),
+                    ffn_cfg=dict(
+                        embed_dims=256,
+                        feedforward_channels=1024,
+                        num_fcs=2))),
+            positional_encoding=dict(num_feats=128, normalize=True)),
+        enforce_decoder_input_project=False,
+        positional_encoding=dict(num_feats=128, normalize=True),
+        transformer_decoder=dict(  # DetrTransformerDecoder
+            return_intermediate=True,
+            num_layers=6,
+            layer_cfg=dict(  # DetrTransformerDecoderLayer
+                self_attn_cfg=dict(  # MultiheadAttention
+                    embed_dims=256,
+                    num_heads=8,
+                    attn_type='SA',
+                    batch_first=True),
+                cross_attn_cfg=dict(  # MultiheadAttention
+                    embed_dims=256,
+                    num_heads=8,
+                    attn_type='CA',
+                    batch_first=True),
+                ffn_cfg=dict(
+                    embed_dims=256,
+                    feedforward_channels=2048,
+                    num_fcs=2,
+                    add_identity=True)),
+            init_cfg=None,
+        ),
+        loss_cls=dict(
+            type='mmdet.CrossEntropyLoss',
+            use_sigmoid=False,
+            loss_weight=2.0,
+            reduction='mean',
+            class_weight=[1.0] * num_classes + [0.1]),
+        loss_mask=dict(
+            type='mmdet.FocalLoss',
+            use_sigmoid=True,
+            gamma=2.0,
+            alpha=0.25,
+            reduction='mean',
+            loss_weight=20.0),
+        loss_dice=dict(
+            type='mmdet.DiceLoss',
+            use_sigmoid=True,
+            activate=True,
+            reduction='mean',
+            naive_dice=True,
+            eps=1.0,
+            loss_weight=1.0)),
+    panoptic_fusion_head=dict(
+        type='MaskFormerFusionHead',
+        num_things_classes=num_things_classes,
+        num_stuff_classes=num_stuff_classes,
+        loss_panoptic=None,
+        init_cfg=None),
+    train_cfg=dict(
+        assigner=dict(
+            type='HungarianAssigner',
+            match_costs=[
+                dict(type='mmdet.ClassificationCost',
+                     weight=2.0),
+                dict(
+                    type='mmdet.FocalLossCost',
+                    weight=20.0,
+                    binary_input=True),
+                dict(
+                    type='mmdet.DiceCost',
+                    weight=1.0,
+                    pred_act=True,
+                    eps=1.0)
+            ]),
+        sampler=dict(type='MaskPseudoSampler')),
+    test_cfg=dict(
+        panoptic_on=True,
+        # For now, the dataset does not support
+        # evaluating semantic segmentation metric.
+        semantic_on=False,
+        instance_on=True,
+        # max_per_image is for instance segmentation.
+        max_per_image=100,
+        iou_thr=0.8,
+        # In Mask2Former's panoptic postprocessing,
+        # it will filter mask area where score is less than 0.5 .
+        filter_low_score=True),
+    init_cfg=None)
+
+# dataset settings
+data_root = os.getenv('COCO_ROOT', 'data/coco/').rstrip('/') + '/'
+train_pipeline = [
+    dict(
+        type='LoadImageFromFile',
+        to_float32=True,
+        backend_args={{_base_.backend_args}}),
+    dict(
+        type='LoadPanopticAnnotations',
+        with_bbox=True,
+        with_mask=True,
+        with_seg=True,
+        backend_args={{_base_.backend_args}}),
+    dict(type='RandomFlip', prob=0.5),
+    # large scale jittering
+    dict(
+        type='RandomResize',
+        scale=image_size,
+        ratio_range=(0.1, 2.0),
+        keep_ratio=True),
+    dict(
+        type='RandomCrop',
+        crop_size=image_size,
+        crop_type='absolute',
+        recompute_bbox=True,
+        allow_negative_crop=True),
+    dict(type='PackDetInputs')
+]
+
+train_dataloader = dict(batch_size=1, dataset=dict(pipeline=train_pipeline))
+
+val_evaluator = [
+    dict(
+        type='CocoPanopticMetric',
+        ann_file=data_root + 'annotations/panoptic_val2017.json',
+        seg_prefix=data_root + 'annotations/panoptic_val2017/',
+        backend_args={{_base_.backend_args}}),
+    dict(
+        type='CocoMetric',
+        ann_file=data_root + 'annotations/instances_val2017.json',
+        metric=['bbox', 'segm'],
+        backend_args={{_base_.backend_args}})
+]
+test_evaluator = val_evaluator
+
+# optimizer
+embed_multi = dict(lr_mult=1.0, decay_mult=0.0)
+optim_wrapper = dict(
+    type='OptimWrapper',
+    optimizer=dict(
+        type='AdamW',
+        lr=0.0001,
+        weight_decay=0.05,
+        eps=1e-8,
+        betas=(0.9, 0.999)),
+    paramwise_cfg=dict(
+        custom_keys={
+            'backbone': dict(lr_mult=0.1, decay_mult=1.0),
+            'query_embed': embed_multi,
+            'query_feat': embed_multi,
+            'level_embed': embed_multi,
+        },
+        norm_decay_mult=0.0),
+    clip_grad=dict(max_norm=0.01, norm_type=2))
+
+# learning policy
+max_iters = 368750
+param_scheduler = dict(
+    type='MultiStepLR',
+    begin=0,
+    end=max_iters,
+    by_epoch=False,
+    milestones=[327778, 355092],
+    gamma=0.1)
+
+# Before 365001th iteration, we do evaluation every 5000 iterations.
+# After 365000th iteration, we do evaluation every 368750 iterations,
+# which means that we do evaluation at the end of training.
+interval = 5000
+dynamic_intervals = [(max_iters // interval * interval + 1, max_iters)]
+train_cfg = dict(
+    type='IterBasedTrainLoop',
+    max_iters=max_iters,
+    val_interval=interval,
+    dynamic_intervals=dynamic_intervals)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
+
+default_hooks = dict(
+    checkpoint=dict(
+        type='CheckpointHook',
+        by_epoch=False,
+        save_last=True,
+        max_keep_ckpts=3,
+        interval=interval))
+log_processor = dict(type='LogProcessor', window_size=50, by_epoch=False)
+
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (8 GPUs) x (2 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=16)
