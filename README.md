@@ -65,12 +65,12 @@ The following best semantic segmentation checkpoints are available from the [Spi
 
 | Dataset | Run | Best checkpoint |
 | --- | --- | --- |
-| ADE20K | SDTv2 (4×4) | [ADE20K-SDTv2-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/ADE20K-SDTv2-ckpt-best.pth?download=true) |
+| ADE20K | SDTv2 (paper: 1×4) | [ADE20K-SDTv2-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/ADE20K-SDTv2-ckpt-best.pth?download=true) |
 | Cityscapes | SDTv2 | [Cityscapes-SDTv2-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/Cityscapes-SDTv2-ckpt-best.pth?download=true) |
 | PASCAL VOC 2012 | 1×4 | [VOC2012-1x4-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/VOC2012-1x4-ckpt-best.pth?download=true) |
 | PASCAL VOC 2012 | 4×4 | [VOC2012-4x4-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/VOC2012-4x4-ckpt-best.pth?download=true) |
 
-The paper reports the ADE20K result with T×D = 1×4. The ADE20K SDTv2 checkpoint listed above was trained with T×D = 4×4 and a 640×640 crop; it comes from a separate run.
+The paper's [ADE20K SDTv2 config](Segmentation/configs/Spike2Former/SDTv2_maskformer_DCNpixelDecoder_ade20k.py) uses T×D = 1×4 and a 512×512 crop. The linked checkpoint embeds a separate run's config with T=4 and a 640×640 crop; its settings do not exactly match the paper config.
 
 <details open>
 <summary>Supported backbones:</summary>
