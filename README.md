@@ -61,7 +61,17 @@ Spiking Neural Networks (SNNs) have a low-power advantage but perform poorly in 
 
 ## Benchmark and model zoo
 
-Results and models will be available in the [model zoo](docs/en/model_zoo.md).
+The following best semantic segmentation checkpoints are available from the [Spike2Former Hugging Face repository](https://huggingface.co/ZhenXXXXXin/Spike2Former). The matching release configs and updated test commands are being reviewed in [PR #9](https://github.com/BICLab/Spike2Former/pull/9). The weights are not stored in this GitHub repository.
+
+| Dataset | Run | Best checkpoint |
+| --- | --- | --- |
+| ADE20K | Spike2Former-L, V2 | [ADE20K-V2-L-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/ADE20K-V2-L-ckpt-best.pth?download=true) |
+| ADE20K | SDTv2 | [ADE20K-SDTv2-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/ADE20K-SDTv2-ckpt-best.pth?download=true) |
+| Cityscapes | SDTv2 | [Cityscapes-SDTv2-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/Cityscapes-SDTv2-ckpt-best.pth?download=true) |
+| PASCAL VOC 2012 | 1×4 | [VOC2012-1x4-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/VOC2012-1x4-ckpt-best.pth?download=true) |
+| PASCAL VOC 2012 | 4×4 | [VOC2012-4x4-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/VOC2012-4x4-ckpt-best.pth?download=true) |
+
+Verify downloaded files with the [SHA-256 checksum list](https://huggingface.co/ZhenXXXXXin/Spike2Former/blob/main/checkpoint_checksums.sha256).
 
 <details open>
 <summary>Supported backbones:</summary>
