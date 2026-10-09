@@ -45,8 +45,6 @@ The released segmentation configs use `ADE20K_ROOT`, `CITYSCAPES_ROOT`, and `VOC
 ### Released semantic segmentation checkpoints
 
 These configs preserve the corresponding run's model and evaluation settings. Local dataset paths and automatic resume settings have been adapted for release. The checkpoints are hosted in the [Spike2Former Hugging Face repository](https://huggingface.co/ZhenXXXXXin/Spike2Former) and are not stored in Git.
-SHA-256 hashes for the five files are recorded in [`checkpoint_checksums.sha256`](checkpoint_checksums.sha256).
-
 | Dataset | Run | Config | Checkpoint |
 | --- | --- | --- | --- |
 | ADE20K | Spike2Former-L, V2 | [`ADE20K_V2_L_iter155000.py`](Segmentation/configs/Spike2Former/released/ADE20K_V2_L_iter155000.py) | [ADE20K-V2-L-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/ADE20K-V2-L-ckpt-best.pth?download=true) |
