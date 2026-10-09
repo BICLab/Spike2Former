@@ -27,7 +27,7 @@ export ADE20K_ROOT=/path/to/ADEChallengeData2016
 export SPIKE2FORMER_BACKBONE_CKPT=/path/to/pretrained_backbone.pth
 CUDA_VISIBLE_DEVICES=0 ./tools/test.sh \
   configs/Spike2Former/released/ADE20K_V2_L_iter155000.py \
-  /path/to/ADE20K_V2_Spike2former_L_best_mIoU_iter_155000.pth
+  /path/to/ADE20K-V2-L-ckpt-best.pth
 ```
 
 ```bash
@@ -49,11 +49,11 @@ SHA-256 hashes for the five files are recorded in [`checkpoint_checksums.sha256`
 
 | Dataset | Run | Config | Checkpoint |
 | --- | --- | --- | --- |
-| ADE20K | Spike2Former-L, V2 | [`ADE20K_V2_L_iter155000.py`](Segmentation/configs/Spike2Former/released/ADE20K_V2_L_iter155000.py) | Upload in progress |
-| ADE20K | SDTv2 | [`ADE20K_SDTv2_iter102500.py`](Segmentation/configs/Spike2Former/released/ADE20K_SDTv2_iter102500.py) | Upload in progress |
-| Cityscapes | SDTv2 | [`Cityscapes_SDTv2_iter75000.py`](Segmentation/configs/Spike2Former/released/Cityscapes_SDTv2_iter75000.py) | Upload in progress |
-| PASCAL VOC 2012 | 1×4 | [`VOC2012_1x4_iter97500.py`](Segmentation/configs/Spike2Former/released/VOC2012_1x4_iter97500.py) | Upload in progress |
-| PASCAL VOC 2012 | 4×4 | [`VOC2012_4x4_iter72500.py`](Segmentation/configs/Spike2Former/released/VOC2012_4x4_iter72500.py) | Upload in progress |
+| ADE20K | Spike2Former-L, V2 | [`ADE20K_V2_L_iter155000.py`](Segmentation/configs/Spike2Former/released/ADE20K_V2_L_iter155000.py) | [ADE20K-V2-L-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/ADE20K-V2-L-ckpt-best.pth?download=true) |
+| ADE20K | SDTv2 | [`ADE20K_SDTv2_iter102500.py`](Segmentation/configs/Spike2Former/released/ADE20K_SDTv2_iter102500.py) | [ADE20K-SDTv2-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/ADE20K-SDTv2-ckpt-best.pth?download=true) |
+| Cityscapes | SDTv2 | [`Cityscapes_SDTv2_iter75000.py`](Segmentation/configs/Spike2Former/released/Cityscapes_SDTv2_iter75000.py) | [Cityscapes-SDTv2-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/Cityscapes-SDTv2-ckpt-best.pth?download=true) |
+| PASCAL VOC 2012 | 1×4 | [`VOC2012_1x4_iter97500.py`](Segmentation/configs/Spike2Former/released/VOC2012_1x4_iter97500.py) | [VOC2012-1x4-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/VOC2012-1x4-ckpt-best.pth?download=true) |
+| PASCAL VOC 2012 | 4×4 | [`VOC2012_4x4_iter72500.py`](Segmentation/configs/Spike2Former/released/VOC2012_4x4_iter72500.py) | [VOC2012-4x4-ckpt-best.pth](https://huggingface.co/ZhenXXXXXin/Spike2Former/resolve/main/VOC2012-4x4-ckpt-best.pth?download=true) |
 
 The implementation also supports [Meta-SpikeFormer](https://github.com/BICLab/Spike-Driven-Transformer-V2) and [E-SpikeFormer](https://github.com/BICLab/Spike-Driven-Transformer-V3) backbones. Other segmentation dataset configurations include [Pascal Context](https://github.com/open-mmlab/mmsegmentation/blob/main/docs/en/user_guides/2_dataset_prepare.md#pascal-context), [COCO-Stuff 10k](https://github.com/open-mmlab/mmsegmentation/blob/main/docs/en/user_guides/2_dataset_prepare.md#coco-stuff-10k), and [COCO-Stuff 164k](https://github.com/open-mmlab/mmsegmentation/blob/main/docs/en/user_guides/2_dataset_prepare.md#coco-stuff-164k).
 
